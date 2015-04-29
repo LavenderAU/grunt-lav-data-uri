@@ -1,57 +1,61 @@
 /*
- * grunt-data-uri
- * http://github.com/ahomu/grunt-data-uri
- * http://aho.mu
- *
- * Copyright (c) 2012 ahomu
- * Licensed under the MIT license.
+ * grunt-lav-data-uri
+ * http://github.com/LavenderAU/grunt-lav-data-uri
  */
 module.exports = function(grunt) {
 
   'use strict';
 
-  var fs       = require('fs'),
-      path     = require('path'),
-      datauri  = require('datauri');
+  var fs = require('fs'),
+    path = require('path'),
+    datauri = require('datauri');
 
-  var RE_CSS_URLFUNC = /(?:url\(["']?)(.*?)(?:["']?\))/,
-      util = grunt.util,
-      gruntfileDir = path.resolve('./'),
-      expandFiles;
+  var RE_URLFUNC = /(?:url\(["']?)(.*?)(?:["']?\))/,
+    util = grunt.util,
+    gruntfileDir = path.resolve('./'),
+    expandFiles;
 
   if (grunt.file.expandFiles) {
     expandFiles = grunt.file.expandFiles;
   } else {
     expandFiles = function(files) {
-      return grunt.file.expand({filter: 'isFile'}, files);
+      return grunt.file.expand({
+        filter: 'isFile'
+      }, files);
     };
   }
 
-  grunt.registerMultiTask('dataUri', 'Convert your css file image path!!', function() {
+  grunt.registerMultiTask('lavDataUri', 'Convert your image path to data-uri!!', function() {
 
-    var options  = this.options(),
-        srcFiles = expandFiles(this.data.src),
-        destDir  = path.resolve(this.data.dest),
-        haystack = [];
+    var options = this.options(),
+      srcFiles = expandFiles(this.data.src),
+      dataDestDir = this.data.dest,
+      haystack = [];
 
     expandFiles(options.target).forEach(function(imgPath) {
       haystack.push(path.resolve(imgPath));
     });
 
+    if (options.type && options.type === 'html') {
+      RE_URLFUNC = /src="([^"]+)"/;
+    }
+
     srcFiles.forEach(function(src) {
-      var content  = grunt.file.read(src),
-          matches  = content.match(new RegExp(RE_CSS_URLFUNC.source, 'g')),
-          outputTo = destDir+'/'+path.basename(src),
-          baseDir,
-          uris;
+      console.log(src)
+      var content = grunt.file.read(src),
+        matches = content.match(new RegExp(RE_URLFUNC.source, 'g')),
+        destDir = path.resolve(dataDestDir || path.dirname(src)),
+        outputTo = destDir + '/' + path.basename(src),
+        baseDir,
+        uris;
 
       // Detect baseDir for using traversal image files
-      baseDir = options.baseDir ? path.resolve(options.baseDir)    // specified base dir
-                                : path.resolve(path.dirname(src)); // detected from src
+      baseDir = options.baseDir ? path.resolve(options.baseDir) // specified base dir
+        : path.resolve(path.dirname(src)); // detected from src
 
       // Not found image path
       if (!matches) {
-        grunt.log.subhead('SRC: file uri not found on '+src);
+        grunt.log.subhead('SRC: file uri not found on ' + src);
         grunt.file.write(outputTo, content);
         grunt.log.ok('Skipped');
         grunt.log.ok('=> ' + outputTo);
@@ -63,7 +67,7 @@ module.exports = function(grunt) {
 
       // List uniq image URIs
       uris = util._.uniq(matches.map(function(m) {
-        return m.match(RE_CSS_URLFUNC)[1];
+        return m.match(RE_URLFUNC)[1];
       }));
 
       // Exclude external http resource
@@ -71,7 +75,7 @@ module.exports = function(grunt) {
         return !u.match('(data:|http)');
       });
 
-      grunt.log.subhead('SRC: '+uris.length+' file uri found on '+src);
+      grunt.log.subhead('SRC: ' + uris.length + ' file uri found on ' + src);
 
       // Process urls
       uris.forEach(function(uri) {
@@ -90,22 +94,22 @@ module.exports = function(grunt) {
           var fileSize = getFileSize(needle);
           if (options.maxBytes && fileSize > options.maxBytes) {
             // file is over the max size
-            grunt.log.ok('Skipping (size ' + fileSize + ' > ' + options.maxBytes +'): ' + uri);
+            grunt.log.ok('Skipping (size ' + fileSize + ' > ' + options.maxBytes + '): ' + uri);
             return;
           } else {
             // Encoding to Data uri
             replacement = datauri(needle);
 
-            grunt.log.ok('Encode: '+needle);
+            grunt.log.ok('Encode: ' + needle);
           }
         } else {
           if (options.fixDirLevel) {
             // Diff of directory level
             replacement = adjustDirectoryLevel(fixedUri, destDir, baseDir);
-            grunt.log.ok('Adjust: '+ uri + ' -> ' + replacement);
+            grunt.log.ok('Adjust: ' + uri + ' -> ' + replacement);
           } else {
             replacement = uri;
-            grunt.log.ok('Ignore: '+ uri);
+            grunt.log.ok('Ignore: ' + uri);
           }
         }
 
@@ -151,17 +155,15 @@ module.exports = function(grunt) {
 
     if (toDir === fromDir) {
       // both toDir and fromDir are same base.
-    }
-    else if (fromDir.indexOf(toDir) === 0) {
+    } else if (fromDir.indexOf(toDir) === 0) {
       // fromDir is shallow than toDir
       path.relative(fromDir, toDir).split('/').forEach(function() {
         resolvedPath = resolvedPath.replace(/^\.\.\//, '');
       });
-    }
-    else if (toDir.indexOf(fromDir) === 0 ) {
+    } else if (toDir.indexOf(fromDir) === 0) {
       // toDir is deep than fromDir
       path.relative(fromDir, toDir).split('/').forEach(function() {
-        resolvedPath = '../'+resolvedPath;
+        resolvedPath = '../' + resolvedPath;
       });
     }
     return resolvedPath;
