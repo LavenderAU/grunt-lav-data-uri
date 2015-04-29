@@ -1,5 +1,5 @@
 {
-  "name": "grunt-data-uri",
+  "name": "grunt-lav-data-uri",
   "version": "0.2.0",
   "description": "Convert to data-uri from image path.",
   "keywords": [
@@ -9,8 +9,8 @@
     "base64",
     "encode"
   ],
-  "homepage": "https://github.com/ahomu/grunt-data-uri",
-  "bugs": "https://github.com/ahomu/grunt-data-uri/issues",
+  "homepage": "https://github.com/LavenderAU/grunt-lav-data-uri",
+  "bugs": "https://github.com/LavenderAU/grunt-lav-data-uri/issues",
   "author": {
     "name": "Ayumu Sato",
     "email": "mail@ayumusato.com",
@@ -19,7 +19,7 @@
   "main": "grunt.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/ahomu/grunt-data-uri.git"
+    "url": "git://github.com/LavenderAU/grunt-lav-data-uri.git"
   },
   "dependencies": {
     "datauri": ">= 0.1"
