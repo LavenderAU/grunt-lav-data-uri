@@ -9,7 +9,7 @@ This is [gruntplugin](http://gruntjs.com) task.
 Install from npm.
 
 ```
-% npm install grunt-data-uri
+% npm install LavenderAU/grunt-lav-data-uri -S
 ```
 
 Add your project's `Gruntfile.js`.
@@ -25,7 +25,7 @@ grunt.loadNpmTasks('grunt-data-uri');
 ```javascript
 grunt.initConfig({
   // sample configuration
-  dataUri: {
+  lavDataUri: {
     dist: {
       // src file
       src: ['sample/css/raw/*.css'],
@@ -64,7 +64,7 @@ div  { background-image: url('../../img/not_encode.png'); }
 
 ###Execute
 
-Execute grunt-data-uri
+Execute grunt-lav-data-uri
 
 ```
 % grunt dataUri
@@ -92,14 +92,9 @@ body { background-image: url('../../img/embed/not_encode.jpeg'); }
 div  { background-image: url('../img/not_encode.png'); }
 ```
 
-##Changelog
 
-+ 0.2.0
-  + Add `maxBytes` option
-  + fix `fixDirLevel` bug
-+ 0.1.0
-  + Add `baseDir` option
-+ 0.0.2
-  + Add `datauri` module
-+ 0.0.1
-  + first commit
+
+## License
+
+Licensed under the MIT license.
+Copyright (c) 2012 ahomu(http://aho.mu)
