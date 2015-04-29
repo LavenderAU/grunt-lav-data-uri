@@ -4,7 +4,7 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
     // sample configuration
-    dataUri: {
+    lavDataUri: {
       dist: {
         src: ['sample/css/raw/*.css'],
         dest: 'sample/css',
