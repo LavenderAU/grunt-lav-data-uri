@@ -30,10 +30,11 @@ grunt.initConfig({
       // src file
       src: ['sample/css/raw/*.css'],
       // output dir
-      dest: 'sample/css',
+      dest: 'sample/css', // optional. If not specified, modifies source file.
       options: {
         // specified files are only encoding
         target: ['sample/img/embed/*.*'],
+        // type: 'html',
         // adjust relative path?
         fixDirLevel: true,
         // img detecting base dir
